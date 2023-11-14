@@ -1,0 +1,13 @@
+{
+    "name": "efg",
+    "version": "0.0.1",
+    "keywords": [
+        "Easy Factor Graph",
+        "Bayesian network",
+        "Undirect graphical models",
+        "graphical models",
+        "Random field",
+        "Conditional random field"
+    ],
+    "description": "Python bindings of Easy Factor Graph"
+}
