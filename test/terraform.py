@@ -42,6 +42,16 @@ add_custom_target({} ALL
                 """.format(target, '${Python3_EXECUTABLE}', self.mainPath, self.soPath, location, '${CMAKE_CURRENT_SOURCE_DIR}/..', '${WRAPPER_NAME}')
                 stream.write(cmakeCmd)
 
+            installLineFrmt = {
+                'TRGT':'${WRAPPER_NAME}',
+                'SRC':'${CMAKE_CURRENT_BINARY_DIR}'
+            }
+            installLine = """
+install(TARGETS {TRGT})
+install(FILES {SRC}/../cases/*.py {SRC}/../main.py DESTINATION bin)
+            """.format(**installLineFrmt)
+            stream.write(installLine)
+
 def terraform(args):
     print('===> terraforming into {}'.format(Paths.COMMANDS))
     os.makedirs(Paths.COMMANDS, exist_ok=True)
