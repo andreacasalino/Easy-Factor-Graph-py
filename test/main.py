@@ -1,4 +1,4 @@
-import argparse, os, sys, shutil, re
+import argparse, os, sys, shutil, re, subprocess
 import unittest
 
 class Path:
@@ -16,7 +16,42 @@ def copySo(source):
 
 def scanTests(folder):
     fltr = filter(lambda f: re.match(r"(.*)?Test.py", f), os.listdir(folder))
-    return [f for f in fltr]
+    return [os.path.join(folder, f) for f in fltr]
+
+def runTests(tests):
+    print('===> running tests from:\n{}'.format('\n'.join(tests)))
+
+    def makeTestsLines(test):
+        info = Path(test)
+        return """
+sys.path.append('{}')
+from {} import *
+     """.format(info.parent, info.name)
+
+    src="""
+import sys
+
+{}
+
+import unittest
+
+if __name__ == '__main__':
+    unittest.main()
+""".format('\n'.join([makeTestsLines(t) for t in tests]) )
+    
+    tmpLocation = 'tmp.py'
+
+    with open(tmpLocation, 'w') as stream:
+        stream.write(src)
+
+    hndlr = subprocess.Popen(['python3', tmpLocation], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    out, err = hndlr.communicate()
+    if not hndlr.returncode == 0:
+        msg = 'Something went wrong:\n{}'.format(err)
+        raise Exception(msg)
+    print('{}\n{}'.format(out, err))
+
+    os.remove(tmpLocation)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -34,16 +69,8 @@ def main():
         tests = scanTests(args.test)
     else:
         tests = [args.test]
-    print('===> running tests from:\n{}'.format('\n'.join(tests)))
 
-    for path in tests:
-        info = Path(path)
-        sys.path.append(info.parent)
-        print('=====> {}  {}'.format(info.parent, info.name))
-        __import__(info.name)
-    
-    return
-    unittest.main()
+    runTests(tests)
 
 if __name__ == '__main__':
     main()
