@@ -1,108 +1,56 @@
-import argparse, os
+import argparse, os, re
 
 class Paths:
     SOURCES = os.path.dirname(__file__)
-    DEST = os.path.join(SOURCES, 'cases')
+    CASES = os.path.join(SOURCES, 'cases')
+    COMMANDS = os.path.join(SOURCES, 'commands')
 
-def gatherSources():
-    res = []
-    for name in os.listdir(Paths.SOURCES):
-        if not name.find('Test') == -1:
-            res.append(name[:-3])
-    return res
+def scanTests():
+    fltr = filter(lambda f: re.match(r"(.*)?Test.py", f), os.listdir(Paths.CASES))
+    return [os.path.join(Paths.CASES, f) for f in fltr]
 
 def show():
     print('===> test sources')
-    for s in gatherSources():
+    for s in scanTests():
         print(s)
 
-class TestMainFile:
-    def __init__(self, files):
-        self.files = files
-    
-    def multiple(files):
-        return TestMainFile(files)
-    
-    def single(file):
-        return TestMainFile([file])
-
-    def __str__(self):
-        TEMPLATE  = """
-import sys
-sys.path.append('{}')
-{}
-
-import unittest
-if __name__ == '__main__':
-    unittest.main()
-        """
-        imports = ['from {} import *'.format(filename) for filename in self.files]
-        return TEMPLATE.format(Paths.SOURCES, '\n'.join(imports))
-    
-    def print(self, path):
-        with open(path, 'w') as stream:
-            stream.write(str(self))
-
 class CMakeLists:
-    def __init__(self, binPath):
+    Location = os.path.join(Paths.COMMANDS, 'CMakeLists.txt')
+
+    def __init__(self, soPath):
+        with open(CMakeLists.Location, 'w') as stream:
+            pass
+        self.mainPath = os.path.join(os.path.dirname(__file__), 'main.py')
+        self.soPath = soPath
         self.tests = []
-        self.copySoDep_(binPath)
 
-    def copySoDep_(self, binPath):
-        libName = os.path.basename(binPath)
-        with open(os.path.join(Paths.DEST, '__copy_so__.py'), 'w') as stream:
-            content = """
-import shutil, os
-
-SRC='{}'
-TRG='{}'
-
-if os.path.exists(TRG):
-  os.remove(TRG)
-shutil.copy(SRC, TRG) 
-            """.format(binPath, os.path.join(Paths.DEST, libName))
-            stream.write(content)
-
-        with open(os.path.join(Paths.DEST, 'CMakeLists.txt'), 'w') as stream:
-                cmakeCmd = """
-add_custom_target(__copy_so__ ALL 
-    COMMAND "{}" "{}"
-    WORKING_DIRECTORY {}
-    DEPENDS {}
-)      
-                """.format('${Python3_EXECUTABLE}', '__copy_so__.py', '${CMAKE_CURRENT_SOURCE_DIR}', '${WRAPPER_NAME}')
-                stream.write(cmakeCmd)
-
-    def add(self, target_name, filename, src : TestMainFile):
+    def add(self, target_name, location):
         self.tests.append((
             target_name,
-            os.path.join(Paths.DEST, filename),
-            src
+            location,
         ))
 
     def print(self):
-        with open(os.path.join(Paths.DEST, 'CMakeLists.txt'), 'a') as stream:
-            for target, filename, source in self.tests:
-                source.print(filename)
-                sources = [os.path.join(Paths.SOURCES, '{}.py'.format(name)) for name in source.files]
+        with open(CMakeLists.Location, 'a') as stream:
+            for target, location in self.tests:
                 cmakeCmd = """
 add_custom_target({} ALL 
-    COMMAND "{}" "{}"
+    COMMAND "{}" "{}" -c "{}" -t "{}"
     WORKING_DIRECTORY {}
-    DEPENDS __copy_so__
-    SOURCES {}
+    DEPENDS {}
 )           
-                """.format(target, '${Python3_EXECUTABLE}', filename, '${CMAKE_CURRENT_SOURCE_DIR}', ' '.join(sources))
+                """.format(target, '${Python3_EXECUTABLE}', self.mainPath, self.soPath, location, '${CMAKE_CURRENT_SOURCE_DIR}/..', '${WRAPPER_NAME}')
                 stream.write(cmakeCmd)
 
 def terraform(args):
-    print('-- ===> terraforming into {}'.format(Paths.DEST))
-    os.makedirs(Paths.DEST, exist_ok=True)
-    cases = gatherSources()
+    print('===> terraforming into {}'.format(Paths.COMMANDS))
+    os.makedirs(Paths.COMMANDS, exist_ok=True)
     cmake = CMakeLists(args.bin)
-    cmake.add('Tests', 'main.py', TestMainFile.multiple(cases))
-    for c in cases:
-        cmake.add(c, 'main_{}.py'.format(c), TestMainFile.single(c))
+    cmake.add('Tests', Paths.CASES)
+    for c in scanTests():
+        name, _ = os.path.splitext(c)
+        name = os.path.basename(name)
+        cmake.add(name, c)
     cmake.print()
 
 if __name__ == '__main__':

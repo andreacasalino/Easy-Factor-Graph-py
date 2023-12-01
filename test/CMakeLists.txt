@@ -7,4 +7,4 @@ execute_process(
     "-b" "${EFG_PYTHON_SO_LOCATION}"
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
-add_subdirectory(cases)
+add_subdirectory(commands)
