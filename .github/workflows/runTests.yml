@@ -31,5 +31,5 @@ jobs:
     - name: Build
       run:  cmake --build ./build --config Release
     - name: Tests
-      working-directory: ./build
-      run:  ninja Tests
+      working-directory: ./artifacts/bin/
+      run:  python3 main.py
