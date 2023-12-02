@@ -9,8 +9,10 @@ project(EFG-python)
 # Without this, any build libraries automatically have names "lib{x}.so"
 set(CMAKE_SHARED_MODULE_PREFIX "")
 
-option(BUILD_EFG_PYTHON_TESTS "" OFF)
+option(BUILD_PYTHON_TEST "" OFF)
+
 add_subdirectory(src)
-if(BUILD_EFG_PYTHON_TESTS)
-    add_subdirectory(test)
+
+if(BUILD_PYTHON_TEST)
+add_subdirectory(test)
 endif()
