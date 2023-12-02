@@ -30,6 +30,8 @@ jobs:
       run:  cmake -B./build -DCMAKE_INSTALL_PREFIX:STRING=./artifacts/ -DCMAKE_CONFIGURATION_TYPES="Release" -DCMAKE_BUILD_TYPE:STRING=Release ${{ matrix.compiler_opt }}     
     - name: Build
       run:  cmake --build ./build --config Release
+    - name: Install
+      run:  cmake --install ./build --config Release
     - name: Tests
       working-directory: ./artifacts/bin/
       run:  python3 main.py
