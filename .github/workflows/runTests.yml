@@ -29,9 +29,7 @@ jobs:
     - name: CMake configure
       run:  cmake -B./build -DCMAKE_INSTALL_PREFIX:STRING=./artifacts/ -DBUILD_PYTHON_TEST=ON -DCMAKE_CONFIGURATION_TYPES="Release" -DCMAKE_BUILD_TYPE:STRING=Release ${{ matrix.compiler_opt }}     
     - name: Build
-      run:  cmake --build ./build --config Release
-    - name: Install
-      run:  cmake --install ./build --config Release
+      run:  cmake --build ./build --config Release --target efg
     - name: Tests
       run:  python3 foo.py
     - uses: actions/upload-artifact@v2
