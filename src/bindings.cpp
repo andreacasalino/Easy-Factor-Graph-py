@@ -10,7 +10,7 @@ namespace py = pybind11;
 constexpr auto byref = py::return_value_policy::reference_internal;
 
 PYBIND11_MODULE(efg, m) {
-  m.attr("__version__") = "1.0.0";
+  m.attr("__version__") = VERSION_INFO;
   m.doc() = "TODO";
 
   //////////////// categoric ////////////////

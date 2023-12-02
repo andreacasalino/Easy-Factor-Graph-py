@@ -18,7 +18,9 @@ FETCH_DEP(efg_lib v.2.0 https://github.com/andreacasalino/Easy-Factor-Graph.git)
 file(GLOB_RECURSE SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 set(WRAPPER_NAME efg)
 pybind11_add_module(${WRAPPER_NAME} ${SRC_FILES})
-target_compile_definitions(${WRAPPER_NAME} PRIVATE VERSION_INFO=${EXAMPLE_VERSION_INFO})
+target_compile_definitions(${WRAPPER_NAME} PRIVATE
+-D VERSION_INFO="${VERSION_INFO}"
+)
 target_include_directories(${WRAPPER_NAME} 
 PUBLIC 
 	${CMAKE_CURRENT_SOURCE_DIR}/header
