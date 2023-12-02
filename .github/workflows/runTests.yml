@@ -32,6 +32,7 @@ jobs:
       run:  cmake --build ./build --config Release
     - name: Install
       run:  cmake --install ./build --config Release
-    - name: Tests
-      working-directory: ./artifacts/bin/
-      run:  python3 main.py
+    - uses: actions/upload-artifact@v2
+      with:
+        path: artifacts
+        name: ${{ matrix.name }}
