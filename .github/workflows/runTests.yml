@@ -31,7 +31,8 @@ jobs:
     - name: Build
       run:  cmake --build ./build --config Release --target efg
     - name: Tests
-      run:  python3 foo.py
+      working-directory: ./build
+      run:  ninja Tests
     - uses: actions/upload-artifact@v2
       with:
         path: artifacts
