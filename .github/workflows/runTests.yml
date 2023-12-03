@@ -12,11 +12,14 @@ jobs:
   unitTests:
     strategy:
       matrix:
-        name: [ubuntu-gcc]
+        name: [ubuntu-gcc, windows-VS]
         include:
             - name: ubuntu-gcc
               os: ubuntu-latest
               compiler_opt: "-DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -G \"Ninja\" -DBUILD_EFG_COMPILER_CHECK=ON"
+            - name: windows-VS
+              os: windows-latest
+              compiler_opt: ""
 
     runs-on: ${{ matrix.os }}
     steps:
