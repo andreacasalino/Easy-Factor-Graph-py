@@ -16,7 +16,7 @@ class GitHubAction:
     def parseRemote_(self):
         txt = Command('git config --get remote.origin.url').run().strip()
         m = re.match("git@github.com:(.*)/(.*).git", txt)
-        self.url = 'https://api.github.com/repos/{}/{}/artifacts'.format(m.group(1), m.group(2))
+        self.url = 'https://api.github.com/repos/{}/{}/actions/artifacts'.format(m.group(1), m.group(2))
 
     def __init__(self):
         with open('token', 'r') as stream:
@@ -29,15 +29,17 @@ class GitHubAction:
 
     def getArtifactId(self, SHA):
         resp =  requests.get(url=self.url)
+        resp.raise_for_status()
         for artifact in resp.json()['artifacts']:
             if artifact['workflow_run']['head_sha'] == SHA:
                 return artifact['id']
-            msg = 'No artifacts found for SHA {}'.format(SHA)
+        msg = 'No artifacts found for SHA {}'.format(SHA)
         raise Exception(msg)
 
     def getArtifact(self, id, destination = 'dist'):
         tmp_zip = 'artifacts.zip'
         resp =  requests.get(headers=self.headers, url='{}/{}/zip'.format(self.url, id))
+        resp.raise_for_status()
         with open(tmp_zip, 'wb') as stream:
             stream.write(resp.raw)
         with zipfile.ZipFile(tmp_zip, 'r') as zip_ref:
