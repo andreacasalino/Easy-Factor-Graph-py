@@ -1,3 +1,7 @@
+########################################################
+## taken from https://github.com/pybind/cmake_example ##
+########################################################
+
 import os
 import re
 import subprocess
@@ -122,21 +126,28 @@ class CMakeBuild(build_ext):
             ["cmake", "--build", ".", *build_args], cwd=build_temp, check=True
         )
 
+import json
+with open('MetaData.json', 'r') as stream:
+    meta_data = json.load(stream)
 
-name = 'efg'
-version = '0.0.1'
+with open('ReadMe.md','r')as stream:
+    read_me = stream.read() 
+
+name=meta_data['name']
 
 # The information here can also be placed in setup.cfg - better separation of
 # logic and declaration, and simpler if you include description/version in a file.
 setup(
-    name=name,
-    version=version,
     author="Andrea Casalino",
     author_email="andrecasa91@gmail.com",
-    description="Python bindings of Easy Factor Graph",
-    long_description="TODO explain these are just the bindings, but the original C++ code is ...",
     ext_modules=[CMakeExtension(name)],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
     python_requires=">=3.7",
+    ##########################################
+    name=name,
+    version=meta_data['version'],
+    keywords=meta_data['keywords'],
+    description=meta_data['description'],
+    long_description=read_me
 )
