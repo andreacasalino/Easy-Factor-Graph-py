@@ -85,9 +85,9 @@ def main():
     actions.getArtifact(ci_id)
 
     logging.info('upload to PyPi')
-    os.environ["TWINE_USERNAME"] = TODO
-    os.environ["TWINE_PASSWORD"] = TODO
-    Command('twine upload dist/*')
+    print('open another shell and run `twine upload dist/*` then press any key')
+    input()
+    # Command('twine upload dist/*').run()
 
     logging.info('update tag to v{}'.format(version))
     Command('git tag -a v{0} {1} -m "PyPi version {0}"'.format(version, SHA)).run()
