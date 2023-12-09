@@ -17,7 +17,7 @@
         },
         "EasyFactorGraph":{
             "cmake_name":"efg_lib",
-            "version":"v.2.0",
+            "version":"v.2.2",
             "url":"https://github.com/andreacasalino/Easy-Factor-Graph.git",
             "cmake_cache":{
                 "LIB_OPT":true,

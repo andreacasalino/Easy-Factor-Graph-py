@@ -1,5 +1,6 @@
 #include <EasyFactorGraph/python/categoric.h>
 #include <EasyFactorGraph/python/factor.h>
+#include <EasyFactorGraph/python/io.h>
 #include <EasyFactorGraph/python/model.h>
 
 #include <pybind11/functional.h>
@@ -191,4 +192,46 @@ PYBIND11_MODULE(efg, m) {
            py::arg("threads") = 1)
           Bind_ModelBase(EFG::python::ConditionalRandomField)
               Bind_FactorsTunableGetter(EFG::python::ConditionalRandomField);
+
+  m.def("import_train_set", &EFG::io::import_train_set);
+
+  py::class_<EFG::python::xml>(m, "xml")
+      .def_static("from_file", &EFG::python::xml::from_file<EFG::python::Graph>)
+      .def_static("from_file",
+                  &EFG::python::xml::from_file<EFG::python::RandomField>)
+      .def_static("to_file", &EFG::python::xml::to_file<EFG::python::Graph>)
+      .def_static("to_file",
+                  &EFG::python::xml::to_file<EFG::python::RandomField>)
+      .def_static(
+          "to_file",
+          &EFG::python::xml::to_file<EFG::python::ConditionalRandomField>)
+      .def_static("to_string", &EFG::python::xml::to_string<EFG::python::Graph>)
+      .def_static("to_string",
+                  &EFG::python::xml::to_string<EFG::python::RandomField>)
+      .def_static(
+          "to_string",
+          &EFG::python::xml::to_string<EFG::python::ConditionalRandomField>);
+
+  py::class_<EFG::python::json>(m, "json")
+      .def_static("from_file",
+                  &EFG::python::json::from_file<EFG::python::Graph>)
+      .def_static("from_file",
+                  &EFG::python::json::from_file<EFG::python::RandomField>)
+      .def_static("from_string",
+                  &EFG::python::json::from_string<EFG::python::Graph>)
+      .def_static("from_string",
+                  &EFG::python::json::from_string<EFG::python::RandomField>)
+      .def_static("to_file", &EFG::python::json::to_file<EFG::python::Graph>)
+      .def_static("to_file",
+                  &EFG::python::json::to_file<EFG::python::RandomField>)
+      .def_static(
+          "to_file",
+          &EFG::python::json::to_file<EFG::python::ConditionalRandomField>)
+      .def_static("to_string",
+                  &EFG::python::json::to_string<EFG::python::Graph>)
+      .def_static("to_string",
+                  &EFG::python::json::to_string<EFG::python::RandomField>)
+      .def_static(
+          "to_string",
+          &EFG::python::json::to_string<EFG::python::ConditionalRandomField>);
 }

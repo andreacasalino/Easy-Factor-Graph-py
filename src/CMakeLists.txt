@@ -1,6 +1,6 @@
 function(FETCH_DEP LIB_NAME TAG URL)
     include(FetchContent)
-    message(STATUS "fetching: ${LIB_NAME}")
+    message(STATUS "fetching: ${LIB_NAME} , version ${TAG}")
     FetchContent_Declare(
         ${LIB_NAME}
         GIT_REPOSITORY ${URL}

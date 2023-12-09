@@ -170,6 +170,9 @@ public:
   }
 
   const auto &getModel() const { return model_; }
+  auto &getModelMut() { return model_; }
+
+  using ModelT_value = ModelT;
 
 protected:
   ModelT model_;
