@@ -10,7 +10,7 @@ function(FETCH_DEP LIB_NAME TAG URL)
 endfunction()
 
 execute_process(
-    COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/terraform.py"
+    COMMAND ${PYTHON_CMD} "${CMAKE_CURRENT_SOURCE_DIR}/terraform.py"
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 add_subdirectory(external)
