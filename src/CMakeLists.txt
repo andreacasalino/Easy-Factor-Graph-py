@@ -9,12 +9,11 @@ function(FETCH_DEP LIB_NAME TAG URL)
     FetchContent_MakeAvailable(${LIB_NAME})
 endfunction()
 
-FETCH_DEP(pybind 1a917f1852eb7819b671fc3fa862840f4c491a07 https://github.com/pybind/pybind11.git)
-
-set(LIB_OPT ON CACHE BOOL "" FORCE)
-set(BUILD_EFG_SAMPLES OFF CACHE BOOL "" FORCE)
-set(BUILD_EFG_TRAINER_TOOLS OFF CACHE BOOL "" FORCE)
-FETCH_DEP(efg_lib v.2.0 https://github.com/andreacasalino/Easy-Factor-Graph.git)
+execute_process(
+    COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/terraform.py"
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+add_subdirectory(external)
 
 file(GLOB_RECURSE SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 set(WRAPPER_NAME efg)

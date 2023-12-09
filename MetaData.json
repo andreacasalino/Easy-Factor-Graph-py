@@ -9,5 +9,22 @@
         "Random field",
         "Conditional random field"
     ],
+    "deps": {
+        "pybind":{
+            "cmake_name":"pybind",
+            "version":"1a917f1852eb7819b671fc3fa862840f4c491a07",
+            "url":"https://github.com/pybind/pybind11.git"
+        },
+        "EasyFactorGraph":{
+            "cmake_name":"efg_lib",
+            "version":"v.2.0",
+            "url":"https://github.com/andreacasalino/Easy-Factor-Graph.git",
+            "cmake_cache":{
+                "LIB_OPT":true,
+                "BUILD_EFG_SAMPLES":false,
+                "BUILD_EFG_TRAINER_TOOLS":false
+            }
+        }
+    },
     "description": "Python bindings of Easy Factor Graph"
 }
