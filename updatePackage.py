@@ -1,14 +1,14 @@
-import requests, subprocess, re, os, zipfile, json, logging
+import requests, subprocess, re, shutil, os, zipfile, json, logging, io
 
 class Command:
     def __init__(self, str):
         self.cmd = str
 
     def run(self):
-        hndlr = subprocess.Popen(self.cmd, shell=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = hndlr.communicate()
+        hndlr = subprocess.Popen(self.cmd, shell=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        out, _ = hndlr.communicate()
         if not hndlr.returncode == 0:
-            msg = 'Error while running {}:\n{}'.format(self.cmd, err)
+            msg = 'Error while running {}'.format(self.cmd)
             raise Exception(msg)
         return out
 
@@ -37,14 +37,13 @@ class GitHubAction:
         raise Exception(msg)
 
     def getArtifact(self, id, destination = 'dist'):
-        tmp_zip = 'artifacts.zip'
+        if os.path.exists(destination):
+            shutil.rmtree(destination)
+        os.makedirs(destination)
         resp =  requests.get(headers=self.headers, url='{}/{}/zip'.format(self.url, id))
         resp.raise_for_status()
-        with open(tmp_zip, 'wb') as stream:
-            stream.write(resp.raw)
-        with zipfile.ZipFile(tmp_zip, 'r') as zip_ref:
-            zip_ref.extractall(destination)
-        os.remove(tmp_zip)
+        z = zipfile.ZipFile(io.BytesIO(resp.content))
+        z.extractall(destination)
 
 def currentPyPi():
     tag = Command('git describe --tags --abbrev=0').run().strip()
@@ -74,7 +73,7 @@ def main():
         raise Exception(msg)
     
     logging.info('get current SHA')
-    SHA = Command('git rev-parse HEAD').run()
+    SHA = Command('git rev-parse HEAD').run().strip()
     logging.info('current SHA `{}`'.format(SHA))
     if SHA == pypiSHA:
         msg = "SHA {} hasn't increase since last up-load to PyPi".format(SHA)
@@ -86,10 +85,12 @@ def main():
     actions.getArtifact(ci_id)
 
     logging.info('upload to PyPi')
-    Command('twine upload dist/*').run()
+    os.environ["TWINE_USERNAME"] = TODO
+    os.environ["TWINE_PASSWORD"] = TODO
+    Command('twine upload dist/*')
 
     logging.info('update tag to v{}'.format(version))
-    Command('git tag -a v{0} -m "PyPi version {0}"'.format(version)).run()
+    Command('git tag -a v{0} {1} -m "PyPi version {0}"'.format(version, SHA)).run()
     Command('git push --tags').run()
 
 if __name__ == '__main__':
