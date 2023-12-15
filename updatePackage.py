@@ -56,6 +56,20 @@ def bumpedVersion():
     with open('MetaData.json', 'r') as stream:
         return json.load(stream)['version']
 
+class PyPiUpload:
+    def checkRc_(self):
+        if not os.path.exists('~/.pypirc'):
+            msg = """
+~/.pypirc not found. This means that you probably haven't created an API token.
+Visit https://pypi.org/manage/account/token/ and follow the steps indicated to create a token and a resource file ~/.pypirc that uses it.
+"""
+            raise Exception(msg)
+
+    def __init__(self):
+        self.checkRc_()
+        print('open another shell and run `twine upload --repository PROJECT_NAME dist/*` then press any key')
+        input()
+
 def main():
     logging.info('checkout master')
     Command('git checkout main').run()
@@ -85,9 +99,7 @@ def main():
     actions.getArtifact(ci_id)
 
     logging.info('upload to PyPi')
-    print('open another shell and run `twine upload dist/*` then press any key')
-    input()
-    # Command('twine upload dist/*').run()
+    PyPiUpload()
 
     logging.info('update tag to v{}'.format(version))
     Command('git tag -a v{0} {1} -m "PyPi version {0}"'.format(version, SHA)).run()
