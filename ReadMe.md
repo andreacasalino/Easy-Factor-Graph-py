@@ -1,11 +1,14 @@
 ![binaries_compilation](https://github.com/andreacasalino/Easy-Factor-Graph-py/actions/workflows/runTests.yml/badge.svg)
 
+[![Downloads](https://static.pepy.tech/badge/efg)](https://pepy.tech/project/efg)
+
 Python bindings of [**Easy Factor Graph**](https://github.com/andreacasalino/Easy-Factor-Graph).
 [**Easy Factor Graph**](https://github.com/andreacasalino/Easy-Factor-Graph) is a general purpose library handling undirected graphical models.
 **Markov Random Fields** as well as **Conditional Random Fields** fall under this cathegory.
 Refer to [*this documentation*](https://github.com/andreacasalino/Easy-Factor-Graph/blob/master/doc/EFG.pdf) for all the details.
 
 Isn't great that you can have the access to the whole power of **Easy Factor Graph** inside python?? Leave a star in the [original repo](https://github.com/andreacasalino/Easy-Factor-Graph) please ;).
+
 
 ## USAGE
 

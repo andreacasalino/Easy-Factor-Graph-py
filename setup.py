@@ -130,7 +130,7 @@ import json
 with open('MetaData.json', 'r') as stream:
     meta_data = json.load(stream)
 
-with open('ReadMe.md','r')as stream:
+with open('ReadMe.md','r') as stream:
     read_me = stream.read() 
 
 name=meta_data['name']
@@ -149,5 +149,6 @@ setup(
     version=meta_data['version'],
     keywords=meta_data['keywords'],
     description=meta_data['description'],
-    long_description=read_me
+    long_description=read_me,
+    long_description_content_type='text/markdown'
 )
