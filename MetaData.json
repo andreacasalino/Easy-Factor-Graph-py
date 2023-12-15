@@ -1,6 +1,6 @@
 {
     "name": "efg",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "keywords": [
         "Easy Factor Graph",
         "Bayesian network",
@@ -17,10 +17,9 @@
         },
         "EasyFactorGraph":{
             "cmake_name":"efg_lib",
-            "version":"v.2.2",
+            "version":"5a85f2ec74b902237e332e599b0cf8568cc89c71",
             "url":"https://github.com/andreacasalino/Easy-Factor-Graph.git",
             "cmake_cache":{
-                "LIB_OPT":true,
                 "BUILD_EFG_SAMPLES":false,
                 "BUILD_EFG_TRAINER_TOOLS":false
             }
