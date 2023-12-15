@@ -9,6 +9,12 @@ function(FETCH_DEP LIB_NAME TAG URL)
     FetchContent_MakeAvailable(${LIB_NAME})
 endfunction()
 
+if (WIN32)
+	set(LIB_OPT OFF CACHE BOOL "" FORCE)
+else()
+	set(LIB_OPT ON CACHE BOOL "" FORCE)
+endif (WIN32)
+
 execute_process(
     COMMAND ${PYTHON_CMD} "${CMAKE_CURRENT_SOURCE_DIR}/terraform.py"
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
@@ -27,7 +33,7 @@ PUBLIC
 PRIVATE 
     ${PYBIND11_INCLUDE_DIRS}
 )
-target_link_libraries(${WRAPPER_NAME} PRIVATE EFG)
+target_link_libraries(${WRAPPER_NAME} PRIVATE EFG-Core)
 
 if(BUILD_PYTHON_TEST)
     get_target_property(TMP_VAR ${WRAPPER_NAME} SUFFIX)
